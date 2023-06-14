@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pycountry
+from flask import app
 
 # Importando a base de dados:
 df = pd.read_csv("ds_salaries.csv")
@@ -44,7 +45,7 @@ def group_job_title(job_title):
     elif job_title in engineer_titles:
         return "Engenheiro"
     elif job_title in researcher_titles:
-        return "Investigador"
+        return "Pesquisador"
     elif job_title in manager_titles:
         return "Gerente"
     elif job_title in AI_titles:
@@ -71,13 +72,13 @@ def experience_level_to_num(experience_level):
 
 def work_year_to_num(work_year):
     if work_year == 2020:
-        return 0
+        return '2020'
     elif work_year == 2021:
-        return 1
+        return '2021'
     elif work_year == 2022:
-        return 2
+        return '2022'
     elif work_year == 2023:
-        return 3
+        return '2023'
 
 
 def employment_type_to_num(employment_type):
@@ -114,40 +115,40 @@ salary_by_country = df.groupby('company_country', as_index=True)['salary_in_usd'
 salary_by_experience_level = df.groupby('experience_level', as_index=True)['salary_in_usd'].mean()
 employee_by_total = df.groupby('employee_residence', as_index=True)['employee_residence'].count()
 company_size_counts = df.groupby('company_size', as_index=True)['company_size'].count()
+salary_by_work_year = df.groupby('work_year', as_index=True)['salary_in_usd'].mean()
 
 plt.figure(figsize=(10, 5))
 plt.barh(job_category_counts.index, job_category_counts.values, color='blue')
-plt.xlabel('% de empregos')
-plt.ylabel('Categoria de empregos')
-plt.suptitle('Porcentagem de categoria de emprego')
+plt.ylabel('Categoria de empregos', size="10px")
 
 plt.figure(figsize=(10, 5))
 sns.barplot(x=salary_by_job_category.index, y=salary_by_job_category.values * 1e-5, color='blue')
 plt.ylabel('Salário Anual (100K)')
-plt.xlabel('Categoria de empregos')
-plt.suptitle('Média salarial por categoria de emprego')
+plt.xlabel(None)
 
 plt.figure(figsize=(12, 6))
 sns.barplot(x=salary_by_country.index, y=salary_by_country.values * 1e-5, color='blue')
 plt.ylabel('Salário Anual (100K)')
-plt.xlabel('Pais da Empresa')
+plt.xlabel(None)
 plt.xticks(rotation=90)
 plt.tight_layout()
-plt.suptitle('Paises que pagam mais')
 
 plt.figure(figsize=(10, 5))
 sns.barplot(x=salary_by_experience_level.index, y=salary_by_experience_level.values * 1e-5, color='blue')
 plt.ylabel('Salário Anual (100K)')
-plt.xlabel('Nível de Experiência')
-plt.suptitle('Média salarial por nível de experiência')
+plt.xlabel(None)
+
+plt.figure(figsize=(10, 5))
+sns.barplot(x=salary_by_work_year.index, y=salary_by_work_year.values * 1e-5, color='blue')
+plt.ylabel('Salário Anual (100K)')
+plt.xlabel(None)
 
 plt.figure(figsize=(12, 6))
 sns.barplot(x=employee_by_total.index, y=employee_by_total.values, color='blue')
 plt.ylabel('Quantidade')
-plt.xlabel('Pais do Empregado')
+plt.xlabel(None)
 plt.xticks(rotation=90)
 plt.tight_layout()
-plt.suptitle('Quantidade de funcionarios por pais')
 
 labels = company_size_counts.index
 sizes = company_size_counts.values
@@ -156,7 +157,6 @@ cor = ['#FF0000', '#00008B', '#FF1493']
 fig1, ax1 = plt.subplots()
 ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%', shadow=False, startangle=90, colors=cor )
 ax1.axis('equal')
-plt.suptitle("Porcentagem do porte das empresas na área tecnológica")
 plt.show()
 # endregion
 
